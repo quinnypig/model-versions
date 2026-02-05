@@ -1,0 +1,25 @@
+---
+name: Propagate model update
+on:
+  push:
+    branches: [main]
+    paths: [models.json]
+
+jobs:
+  trigger-deploys:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repo:
+          - snarknado
+          - newsletter-v2
+          - lwia-autoresponder
+          - secret-agent-corey
+          - leakdetector
+          - pricetracker
+          - shitposting-trip-reports
+    steps:
+      - name: Trigger deploy
+        env:
+          GH_TOKEN: ${{ secrets.DEPLOY_PAT }}
+        run: gh workflow run deploy.yml --repo quinnypig/${{ matrix.repo }}

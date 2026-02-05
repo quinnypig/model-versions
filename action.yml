@@ -1,0 +1,28 @@
+---
+name: 'Get Model Versions'
+description: 'Provides current Anthropic model IDs in all provider formats'
+
+outputs:
+  default:
+    description: 'Anthropic API model ID'
+    value: ${{ steps.resolve.outputs.default }}
+  default-bedrock:
+    description: 'AWS Bedrock model ID'
+    value: ${{ steps.resolve.outputs.default-bedrock }}
+  default-vertex:
+    description: 'Vertex AI model ID'
+    value: ${{ steps.resolve.outputs.default-vertex }}
+
+runs:
+  using: composite
+  steps:
+    - name: Resolve model versions
+      id: resolve
+      shell: bash
+      run: |
+        CONFIG=$(curl -sf "https://raw.githubusercontent.com/quinnypig/model-versions/main/models.json")
+        MODEL=$(echo "$CONFIG" | jq -r '.default')
+
+        echo "default=${MODEL}" >> "$GITHUB_OUTPUT"
+        echo "default-bedrock=anthropic.${MODEL}-v1" >> "$GITHUB_OUTPUT"
+        echo "default-vertex=publishers/anthropic/models/${MODEL}" >> "$GITHUB_OUTPUT"
