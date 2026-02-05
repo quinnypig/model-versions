@@ -5,10 +5,15 @@ on:
     branches: [main]
     paths: [models.json]
 
+concurrency:
+  group: propagate-model-update
+  cancel-in-progress: true
+
 jobs:
   trigger-deploys:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         repo:
           - snarknado

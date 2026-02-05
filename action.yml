@@ -20,8 +20,19 @@ runs:
       id: resolve
       shell: bash
       run: |
-        CONFIG=$(curl -sf "https://raw.githubusercontent.com/quinnypig/model-versions/main/models.json")
+        set -euo pipefail
+
+        CONFIG=$(curl -sf "https://raw.githubusercontent.com/quinnypig/model-versions/main/models.json") || {
+          echo "::error::Failed to fetch models.json from model-versions repo"
+          exit 1
+        }
+
         MODEL=$(echo "$CONFIG" | jq -r '.default')
+
+        if [[ -z "$MODEL" || "$MODEL" == "null" ]]; then
+          echo "::error::Failed to resolve default model ID (got '${MODEL}')"
+          exit 1
+        fi
 
         echo "default=${MODEL}" >> "$GITHUB_OUTPUT"
         echo "default-bedrock=anthropic.${MODEL}-v1" >> "$GITHUB_OUTPUT"
