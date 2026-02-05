@@ -19,9 +19,6 @@ jobs:
           - repo: snarknado
             owner: LastWeekinAWS
             token_secret: DEPLOY_PAT_LWIA
-          - repo: newsletter-v2
-            owner: pipeline-of-regret
-            token_secret: DEPLOY_PAT_PIPELINE
           - repo: lwia-autoresponder
             owner: pipeline-of-regret
             token_secret: DEPLOY_PAT_PIPELINE
