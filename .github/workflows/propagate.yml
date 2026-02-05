@@ -15,16 +15,30 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        repo:
-          - snarknado
-          - newsletter-v2
-          - lwia-autoresponder
-          - secret-agent-corey
-          - leakdetector
-          - pricetracker
-          - shitposting-trip-reports
+        include:
+          - repo: snarknado
+            owner: LastWeekinAWS
+            token_secret: DEPLOY_PAT_LWIA
+          - repo: newsletter-v2
+            owner: pipeline-of-regret
+            token_secret: DEPLOY_PAT_PIPELINE
+          - repo: lwia-autoresponder
+            owner: pipeline-of-regret
+            token_secret: DEPLOY_PAT_PIPELINE
+          - repo: secret-agent-corey
+            owner: pipeline-of-regret
+            token_secret: DEPLOY_PAT_PIPELINE
+          - repo: leakdetector
+            owner: pipeline-of-regret
+            token_secret: DEPLOY_PAT_PIPELINE
+          - repo: pricetracker
+            owner: pipeline-of-regret
+            token_secret: DEPLOY_PAT_PIPELINE
+          - repo: shitposting-trip-reports
+            owner: pipeline-of-regret
+            token_secret: DEPLOY_PAT_PIPELINE
     steps:
       - name: Trigger deploy
         env:
-          GH_TOKEN: ${{ secrets.DEPLOY_PAT }}
-        run: gh workflow run deploy.yml --repo quinnypig/${{ matrix.repo }}
+          GH_TOKEN: ${{ secrets[matrix.token_secret] }}
+        run: gh workflow run deploy.yml --repo ${{ matrix.owner }}/${{ matrix.repo }}
